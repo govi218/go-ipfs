@@ -18,6 +18,8 @@ import (
 	"errors"
 	"fmt"
 
+	recovery "github.com/Wondertan/go-ipfs-recovery"
+	"github.com/Wondertan/go-ipfs-recovery/reedsolomon"
 	bserv "github.com/ipfs/go-blockservice"
 	"github.com/ipfs/go-ipfs-blockstore"
 	"github.com/ipfs/go-ipfs-exchange-interface"
@@ -226,6 +228,11 @@ func (api *CoreAPI) WithOptions(opts ...options.ApiOption) (coreiface.CoreAPI, e
 		subApi.dag = dag.NewDAGService(subApi.blocks)
 	}
 
+	// subApi.dag = &dag.ComboService{
+	// 	Read:  recovery.NewNodeGetter(subApi.dag, reedsolomon.NewRestorer(subApi.dag)), // TODO This should not be tight to concrete implementation
+	// 	Write: subApi.dag,
+	// }
+
 	return subApi, nil
 }
 
@@ -235,7 +242,7 @@ func (api *CoreAPI) getSession(ctx context.Context) *CoreAPI {
 
 	// TODO: We could also apply this to api.blocks, and compose into writable api,
 	// but this requires some changes in blockservice/merkledag
-	sesApi.dag = dag.NewReadOnlyDagService(dag.NewSession(ctx, api.dag))
+	sesApi.dag = dag.NewReadOnlyDagService(recovery.NewNodeGetter(dag.NewSession(ctx, api.dag), reedsolomon.NewRecoverer(api.dag)))
 
 	return &sesApi
 }
