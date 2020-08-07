@@ -3,6 +3,7 @@ module github.com/ipfs/go-ipfs
 require (
 	bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc
 	github.com/AndreasBriese/bbloom v0.0.0-20190825152654-46b345b51c96 // indirect
+	github.com/Wondertan/go-ipfs-recovery v0.0.0-20200807052213-8607000b59eb
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/bren2010/proquint v0.0.0-20160323162903-38337c27106d
 	github.com/coreos/go-systemd/v22 v22.1.0
